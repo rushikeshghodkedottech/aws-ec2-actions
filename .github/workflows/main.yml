@@ -1,0 +1,37 @@
+name: create ec2 using github actions
+
+on:
+  push:
+    branches: main
+
+  workflow_dispatch:
+
+jobs:
+  run-ec2:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS 
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_ID }}
+           aws-region: eu-west-1
+        
+      - name: Define env vars 
+        run: |
+          echo "AWS_KEY_PAIR_NAME=${{ secrets.AWS_KEY_PAIR_NAME }}" >> $GITHUB_ENV
+          echo "AWS_SECURITY_GROUP_ID=${{ secrets.AWS_SECURITY_GROUP_ID }}" >> $GITHUB_ENV
+          echo "AMI_ID=${{ secrets.AMI_ID }}" >> $GITHUB_ENV
+          echo "INSTANCE_TYPE=${{ secrets.INSTANCE_TYPE }}" >> $GITHUB_ENV
+          echo "SUBNET_ID=${{ secrets.SUBNET_ID }}" >> $GITHUB_ENV
+        
+      - name: Make script executable
+        run: chmod +x ./ec2.sh
+
+      - name: Run EC2
+        run: ./ec2.sh
+        
