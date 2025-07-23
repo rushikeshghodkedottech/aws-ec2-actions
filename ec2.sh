@@ -45,7 +45,6 @@ function create_instance(){
 
     local AMI_ID="${AMI_ID:-ami-01f23391a59163da9}"  # Use environment variable or fallback to default
     local INSTANCE_TYPE="${INSTANCE_TYPE:-t2.micro}"  # Use environment variable or fallback to default
-    local SUBNET_ID="${SUBNET_ID:-subnet-XXXX}"  # Use environment variable or fallback to default
 
     INSTANCE_INFO=$(aws ec2 run-instances \
         --image-id "$AMI_ID" \
@@ -53,7 +52,6 @@ function create_instance(){
         --instance-type "$INSTANCE_TYPE" \
         --key-name "$KEY_PAIR_NAME" \
         $SECURITY_GROUP_ARG \
-        --subnet-id "$SUBNET_ID" \
         --query 'Instances[0].InstanceId' \
         --output text 2>&1)
 
